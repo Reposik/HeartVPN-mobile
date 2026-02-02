@@ -1,39 +1,36 @@
-name: Build HeartVPN Mobile APK
+name: HeartVPN APK Build
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
-  build:
+  build_apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
-        run: |
-          pip install flet
-          # Если у тебя есть requirements.txt, раскомментируй строку ниже:
-          # pip install -r requirements.txt
+      - name: Install Flet
+        run: pip install flet
 
-      - name: Setup Flutter SDK
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.27.0'
           channel: 'stable'
 
       - name: Build APK
         run: |
-          # Собираем конкретно твой файл
-          flet build apk main-mobile.py --project "HeartVPN"
+          # --yes 
+          flet build apk main-mobile.py --project "HeartVPN" --yes
 
-      - name: Upload APK
+      - name: Save APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: HeartVPN-Mobile-Install
+          name: Heart-VPN-Mobile
           path: build/apk/*.apk
