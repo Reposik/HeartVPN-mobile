@@ -1,44 +1,39 @@
-name: Heart VPN APK Builder
+name: Build HeartVPN Mobile APK
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: Install Flet CLI
+      - name: Install Dependencies
         run: |
           pip install flet
+          # Если у тебя есть requirements.txt, раскомментируй строку ниже:
+          # pip install -r requirements.txt
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Setup Flutter
+      - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.19.0'
           channel: 'stable'
 
-      - name: Build Android APK
+      - name: Build APK
         run: |
-          # Указываем путь именно к твоему файлу main-mobile.py
-          flet build apk --project "HeartVPN" --main main-mobile.py
+          # Собираем конкретно твой файл
+          flet build apk main-mobile.py --project "HeartVPN"
 
-      - name: Upload HeartVPN APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: HeartVPN-Mobile-Build
+          name: HeartVPN-Mobile-Install
           path: build/apk/*.apk
-          retention-days: 7
